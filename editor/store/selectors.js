@@ -224,7 +224,7 @@ export function getCurrentPostLastRevisionId( state ) {
  * @return {Object} Object of key value pairs comprising unsaved edits.
  */
 export function getPostEdits( state ) {
-	return get( state, [ 'editor', 'present', 'edits' ], {} );
+	return get( state, [ 'editor', 'buffer', 'edits' ], {} );
 }
 
 /**
@@ -368,9 +368,10 @@ export function getDocumentTitle( state ) {
  * @return {string} Raw post excerpt.
  */
 export function getEditedPostExcerpt( state ) {
-	return state.editor.present.edits.excerpt === undefined ?
+	const edits = getPostEdits( state );
+	return edits.excerpt === undefined ?
 		state.currentPost.excerpt :
-		state.editor.present.edits.excerpt;
+		edits.excerpt;
 }
 
 /**
@@ -402,7 +403,7 @@ export function getEditedPostPreviewLink( state ) {
  */
 export const getBlock = createSelector(
 	( state, uid ) => {
-		const block = state.editor.present.blocksByUid[ uid ];
+		const block = state.editor.buffer.blocksByUid[ uid ];
 		if ( ! block ) {
 			return null;
 		}
@@ -435,15 +436,15 @@ export const getBlock = createSelector(
 		};
 	},
 	( state ) => [
-		get( state, [ 'editor', 'present', 'blocksByUid' ] ),
-		get( state, [ 'editor', 'present', 'edits', 'meta' ] ),
+		get( state, [ 'editor', 'buffer', 'blocksByUid' ] ),
+		get( state, [ 'editor', 'buffer', 'edits', 'meta' ] ),
 		get( state, 'currentPost.meta' ),
 	]
 );
 
 function getPostMeta( state, key ) {
-	return has( state, [ 'editor', 'present', 'edits', 'meta', key ] ) ?
-		get( state, [ 'editor', 'present', 'edits', 'meta', key ] ) :
+	return has( state, [ 'editor', 'buffer', 'edits', 'meta', key ] ) ?
+		get( state, [ 'editor', 'buffer', 'edits', 'meta', key ] ) :
 		get( state, [ 'currentPost', 'meta', key ] );
 }
 
@@ -465,8 +466,8 @@ export const getBlocks = createSelector(
 		);
 	},
 	( state ) => [
-		state.editor.present.blockOrder,
-		state.editor.present.blocksByUid,
+		state.editor.buffer.blockOrder,
+		state.editor.buffer.blocksByUid,
 	]
 );
 
@@ -525,7 +526,7 @@ export function getSelectedBlock( state ) {
  * @return {?string} Root UID, if exists
  */
 export function getBlockRootUID( state, uid ) {
-	const { blockOrder } = state.editor.present;
+	const { blockOrder } = state.editor.buffer;
 
 	for ( const rootUID in blockOrder ) {
 		if ( includes( blockOrder[ rootUID ], uid ) ) {
@@ -574,7 +575,7 @@ export function getAdjacentBlock( state, startUID, modifier = 1 ) {
 		return null;
 	}
 
-	const { blockOrder } = state.editor.present;
+	const { blockOrder } = state.editor.buffer;
 	const orderSet = blockOrder[ rootUID ];
 	const index = orderSet.indexOf( startUID );
 	const nextIndex = ( index + ( 1 * modifier ) );
@@ -670,7 +671,7 @@ export const getMultiSelectedBlockUids = createSelector(
 		return blockOrder.slice( startIndex, endIndex + 1 );
 	},
 	( state ) => [
-		state.editor.present.blockOrder,
+		state.editor.buffer.blockOrder,
 		state.blockSelection.start,
 		state.blockSelection.end,
 	],
@@ -687,11 +688,11 @@ export const getMultiSelectedBlockUids = createSelector(
 export const getMultiSelectedBlocks = createSelector(
 	( state ) => getMultiSelectedBlockUids( state ).map( ( uid ) => getBlock( state, uid ) ),
 	( state ) => [
-		state.editor.present.blockOrder,
+		state.editor.buffer.blockOrder,
 		state.blockSelection.start,
 		state.blockSelection.end,
-		state.editor.present.blocksByUid,
-		state.editor.present.edits.meta,
+		state.editor.buffer.blocksByUid,
+		state.editor.buffer.edits.meta,
 		state.currentPost.meta,
 	]
 );
@@ -797,7 +798,7 @@ export function getMultiSelectedBlocksEndUid( state ) {
  * @return {Array} Ordered unique IDs of post blocks.
  */
 export function getBlockOrder( state, rootUID ) {
-	return state.editor.present.blockOrder[ rootUID || '' ] || DEFAULT_BLOCK_ORDER;
+	return state.editor.buffer.blockOrder[ rootUID || '' ] || DEFAULT_BLOCK_ORDER;
 }
 
 /**
@@ -1049,9 +1050,9 @@ export const getEditedPostContent = createSelector(
 		return serialize( getBlocks( state ) );
 	},
 	( state ) => [
-		state.editor.present.edits.content,
-		state.editor.present.blocksByUid,
-		state.editor.present.blockOrder,
+		state.editor.buffer.edits.content,
+		state.editor.buffer.blocksByUid,
+		state.editor.buffer.blockOrder,
 	],
 );
 

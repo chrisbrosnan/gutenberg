@@ -98,9 +98,10 @@ export default class RichText extends Component {
 		this.onKeyUp = this.onKeyUp.bind( this );
 		this.changeFormats = this.changeFormats.bind( this );
 		this.onSelectionChange = this.onSelectionChange.bind( this );
-		this.maybePropagateUndo = this.maybePropagateUndo.bind( this );
+		this.onPropagateUndo = this.onPropagateUndo.bind( this );
 		this.onPastePreProcess = this.onPastePreProcess.bind( this );
 		this.onPaste = this.onPaste.bind( this );
+		this.onAddUndo = this.onAddUndo.bind( this );
 
 		this.state = {
 			formats: {},
@@ -140,15 +141,16 @@ export default class RichText extends Component {
 		} );
 
 		editor.on( 'init', this.onInit );
-		editor.on( 'focusout', this.onChange );
 		editor.on( 'NewBlock', this.onNewBlock );
 		editor.on( 'nodechange', this.onNodeChange );
 		editor.on( 'keydown', this.onKeyDown );
 		editor.on( 'keyup', this.onKeyUp );
 		editor.on( 'selectionChange', this.onSelectionChange );
-		editor.on( 'BeforeExecCommand', this.maybePropagateUndo );
+		editor.on( 'BeforeExecCommand', this.onPropagateUndo );
 		editor.on( 'PastePreProcess', this.onPastePreProcess, true /* Add before core handlers */ );
 		editor.on( 'paste', this.onPaste, true /* Add before core handlers */ );
+		editor.on( 'input', this.onChange );
+		editor.on( 'addundo', this.onAddUndo );
 
 		patterns.apply( this, [ editor ] );
 
@@ -220,23 +222,15 @@ export default class RichText extends Component {
 	/**
 	 * Handles an undo event from tinyMCE.
 	 *
-	 * When user attempts Undo when empty Undo stack, propagate undo
-	 * action to context handler. The compromise here is that: TinyMCE
-	 * handles Undo until change, at which point `editor.save` resets
-	 * history. If no history exists, let context handler have a turn.
-	 * Defer in case an immediate undo causes TinyMCE to be destroyed,
-	 * if other undo behaviors test presence of an input field.
-	 *
-	 * @param {UndoEvent} event The undo event as triggered by tinyMCE.
+	 * @param {UndoEvent} event The undo event as triggered by TinyMCE.
 	 */
-	maybePropagateUndo( event ) {
+	onPropagateUndo( event ) {
 		const { onUndo } = this.context;
-		if ( onUndo && event.command === 'Undo' && ! this.editor.undoManager.hasUndo() ) {
-			defer( onUndo );
+		const { command } = event;
 
-			// We could return false here to stop other TinyMCE event handlers
-			// from running, but we assume TinyMCE won't do anything on an
-			// empty undo stack anyways.
+		if ( onUndo && ( command === 'Undo' || command === 'Redo' ) ) {
+			defer( onUndo );
+			event.preventDefault();
 		}
 	}
 
@@ -366,21 +360,21 @@ export default class RichText extends Component {
 		}
 	}
 
-	fireChange() {
-		this.savedContent = this.getContent();
-		this.editor.save();
-		this.props.onChange( this.state.empty ? [] : this.savedContent );
-	}
-
 	/**
 	 * Handles any case where the content of the tinyMCE instance has changed.
 	 */
 	onChange() {
-		// Note that due to efficiency, speed and low cost requirements isDirty may
-		// not reflect reality for a brief period immediately after a change.
-		if ( this.editor.isDirty() ) {
-			this.fireChange();
+		this.savedContent = this.getContent();
+		this.props.onChange( this.state.empty ? [] : this.savedContent );
+	}
+
+	onAddUndo( { lastLevel } ) {
+		if ( ! lastLevel ) {
+			return;
 		}
+
+		this.onChange();
+		this.context.onCreateUndoLevel();
 	}
 
 	/**
@@ -508,7 +502,7 @@ export default class RichText extends Component {
 				return;
 			}
 
-			this.fireChange();
+			this.context.onCreateUndoLevel();
 
 			const forward = event.keyCode === DELETE;
 
@@ -566,6 +560,8 @@ export default class RichText extends Component {
 					this.splitContent();
 				}
 			}
+
+			this.context.onCreateUndoLevel();
 		}
 	}
 
@@ -687,24 +683,8 @@ export default class RichText extends Component {
 		this.setState( { formats, focusPosition, selectedNodeId: this.state.selectedNodeId + 1 } );
 	}
 
-	updateContent() {
-		const bookmark = this.editor.selection.getBookmark( 2, true );
-		this.savedContent = this.props.value;
-		this.setContent( this.savedContent );
-		this.editor.selection.moveToBookmark( bookmark );
-
-		// Saving the editor on updates avoid unecessary onChanges calls
-		// These calls can make the focus jump
-		this.editor.save();
-	}
-
-	setContent( content ) {
-		if ( ! content ) {
-			content = '';
-		}
-
-		content = renderToString( content );
-		this.editor.setContent( content );
+	setContent( content = '' ) {
+		this.editor.setContent( renderToString( content ) );
 	}
 
 	getContent() {
@@ -713,6 +693,7 @@ export default class RichText extends Component {
 
 	componentWillUnmount() {
 		this.onChange();
+		this.context.onCreateUndoLevel();
 	}
 
 	componentDidUpdate( prevProps ) {
@@ -724,7 +705,8 @@ export default class RichText extends Component {
 			! isEqual( this.props.value, prevProps.value ) &&
 			! isEqual( this.props.value, this.savedContent )
 		) {
-			this.updateContent();
+			this.savedContent = this.props.value;
+			this.setContent( this.savedContent );
 		}
 	}
 
@@ -857,6 +839,7 @@ export default class RichText extends Component {
 RichText.contextTypes = {
 	onUndo: noop,
 	canUserUseUnfilteredHTML: noop,
+	onCreateUndoLevel: noop,
 };
 
 RichText.defaultProps = {

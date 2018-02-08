@@ -74,9 +74,9 @@ describe( 'state', () => {
 
 			expect( state.past ).toEqual( [] );
 			expect( state.future ).toEqual( [] );
-			expect( state.present.edits ).toEqual( {} );
-			expect( state.present.blocksByUid ).toEqual( {} );
-			expect( state.present.blockOrder ).toEqual( {} );
+			expect( state.buffer.edits ).toEqual( {} );
+			expect( state.buffer.blocksByUid ).toEqual( {} );
+			expect( state.buffer.blockOrder ).toEqual( {} );
 			expect( state.isDirty ).toBe( false );
 		} );
 
@@ -87,9 +87,9 @@ describe( 'state', () => {
 				blocks: [ { uid: 'bananas', innerBlocks: [] } ],
 			} );
 
-			expect( Object.keys( state.present.blocksByUid ) ).toHaveLength( 1 );
-			expect( values( state.present.blocksByUid )[ 0 ].uid ).toBe( 'bananas' );
-			expect( state.present.blockOrder ).toEqual( {
+			expect( Object.keys( state.buffer.blocksByUid ) ).toHaveLength( 1 );
+			expect( values( state.buffer.blocksByUid )[ 0 ].uid ).toBe( 'bananas' );
+			expect( state.buffer.blockOrder ).toEqual( {
 				'': [ 'bananas' ],
 				bananas: [],
 			} );
@@ -105,8 +105,8 @@ describe( 'state', () => {
 				} ],
 			} );
 
-			expect( Object.keys( state.present.blocksByUid ) ).toHaveLength( 2 );
-			expect( state.present.blockOrder ).toEqual( {
+			expect( Object.keys( state.buffer.blocksByUid ) ).toHaveLength( 2 );
+			expect( state.buffer.blockOrder ).toEqual( {
 				'': [ 'bananas' ],
 				apples: [],
 				bananas: [ 'apples' ],
@@ -132,9 +132,9 @@ describe( 'state', () => {
 				} ],
 			} );
 
-			expect( Object.keys( state.present.blocksByUid ) ).toHaveLength( 2 );
-			expect( values( state.present.blocksByUid )[ 1 ].uid ).toBe( 'ribs' );
-			expect( state.present.blockOrder ).toEqual( {
+			expect( Object.keys( state.buffer.blocksByUid ) ).toHaveLength( 2 );
+			expect( values( state.buffer.blocksByUid )[ 1 ].uid ).toBe( 'ribs' );
+			expect( state.buffer.blockOrder ).toEqual( {
 				'': [ 'chicken', 'ribs' ],
 				chicken: [],
 				ribs: [],
@@ -161,10 +161,10 @@ describe( 'state', () => {
 				} ],
 			} );
 
-			expect( Object.keys( state.present.blocksByUid ) ).toHaveLength( 1 );
-			expect( values( state.present.blocksByUid )[ 0 ].name ).toBe( 'core/freeform' );
-			expect( values( state.present.blocksByUid )[ 0 ].uid ).toBe( 'wings' );
-			expect( state.present.blockOrder ).toEqual( {
+			expect( Object.keys( state.buffer.blocksByUid ) ).toHaveLength( 1 );
+			expect( values( state.buffer.blocksByUid )[ 0 ].name ).toBe( 'core/freeform' );
+			expect( values( state.buffer.blocksByUid )[ 0 ].uid ).toBe( 'wings' );
+			expect( state.buffer.blockOrder ).toEqual( {
 				'': [ 'wings' ],
 				wings: [],
 			} );
@@ -185,7 +185,7 @@ describe( 'state', () => {
 				blocks: [ replacementBlock ],
 			} );
 
-			expect( state.present.blockOrder ).toEqual( {
+			expect( state.buffer.blockOrder ).toEqual( {
 				'': [ wrapperBlock.uid ],
 				[ wrapperBlock.uid ]: [ replacementBlock.uid ],
 				[ replacementBlock.uid ]: [],
@@ -212,7 +212,7 @@ describe( 'state', () => {
 				},
 			} );
 
-			expect( state.present.blocksByUid.chicken ).toEqual( {
+			expect( state.buffer.blocksByUid.chicken ).toEqual( {
 				uid: 'chicken',
 				name: 'core/test-block',
 				attributes: { content: 'ribs' },
@@ -240,7 +240,7 @@ describe( 'state', () => {
 				updatedId: 3,
 			} );
 
-			expect( state.present.blocksByUid.chicken ).toEqual( {
+			expect( state.buffer.blocksByUid.chicken ).toEqual( {
 				uid: 'chicken',
 				name: 'core/block',
 				attributes: {
@@ -270,7 +270,7 @@ describe( 'state', () => {
 				uids: [ 'ribs' ],
 			} );
 
-			expect( state.present.blockOrder[ '' ] ).toEqual( [ 'ribs', 'chicken' ] );
+			expect( state.buffer.blockOrder[ '' ] ).toEqual( [ 'ribs', 'chicken' ] );
 		} );
 
 		it( 'should move the nested block up', () => {
@@ -287,7 +287,7 @@ describe( 'state', () => {
 				rootUID: wrapperBlock.uid,
 			} );
 
-			expect( state.present.blockOrder ).toEqual( {
+			expect( state.buffer.blockOrder ).toEqual( {
 				'': [ wrapperBlock.uid ],
 				[ wrapperBlock.uid ]: [ movedBlock.uid, siblingBlock.uid ],
 				[ movedBlock.uid ]: [],
@@ -320,7 +320,7 @@ describe( 'state', () => {
 				uids: [ 'ribs', 'veggies' ],
 			} );
 
-			expect( state.present.blockOrder[ '' ] ).toEqual( [ 'ribs', 'veggies', 'chicken' ] );
+			expect( state.buffer.blockOrder[ '' ] ).toEqual( [ 'ribs', 'veggies', 'chicken' ] );
 		} );
 
 		it( 'should move multiple nested blocks up', () => {
@@ -338,7 +338,7 @@ describe( 'state', () => {
 				rootUID: wrapperBlock.uid,
 			} );
 
-			expect( state.present.blockOrder ).toEqual( {
+			expect( state.buffer.blockOrder ).toEqual( {
 				'': [ wrapperBlock.uid ],
 				[ wrapperBlock.uid ]: [ movedBlockA.uid, movedBlockB.uid, siblingBlock.uid ],
 				[ movedBlockA.uid ]: [],
@@ -367,7 +367,7 @@ describe( 'state', () => {
 				uids: [ 'chicken' ],
 			} );
 
-			expect( state.present.blockOrder ).toBe( original.present.blockOrder );
+			expect( state.buffer.blockOrder ).toBe( original.buffer.blockOrder );
 		} );
 
 		it( 'should move the block down', () => {
@@ -390,7 +390,7 @@ describe( 'state', () => {
 				uids: [ 'chicken' ],
 			} );
 
-			expect( state.present.blockOrder[ '' ] ).toEqual( [ 'ribs', 'chicken' ] );
+			expect( state.buffer.blockOrder[ '' ] ).toEqual( [ 'ribs', 'chicken' ] );
 		} );
 
 		it( 'should move the nested block down', () => {
@@ -407,7 +407,7 @@ describe( 'state', () => {
 				rootUID: wrapperBlock.uid,
 			} );
 
-			expect( state.present.blockOrder ).toEqual( {
+			expect( state.buffer.blockOrder ).toEqual( {
 				'': [ wrapperBlock.uid ],
 				[ wrapperBlock.uid ]: [ siblingBlock.uid, movedBlock.uid ],
 				[ movedBlock.uid ]: [],
@@ -440,7 +440,7 @@ describe( 'state', () => {
 				uids: [ 'chicken', 'ribs' ],
 			} );
 
-			expect( state.present.blockOrder[ '' ] ).toEqual( [ 'veggies', 'chicken', 'ribs' ] );
+			expect( state.buffer.blockOrder[ '' ] ).toEqual( [ 'veggies', 'chicken', 'ribs' ] );
 		} );
 
 		it( 'should move multiple nested blocks down', () => {
@@ -458,7 +458,7 @@ describe( 'state', () => {
 				rootUID: wrapperBlock.uid,
 			} );
 
-			expect( state.present.blockOrder ).toEqual( {
+			expect( state.buffer.blockOrder ).toEqual( {
 				'': [ wrapperBlock.uid ],
 				[ wrapperBlock.uid ]: [ siblingBlock.uid, movedBlockA.uid, movedBlockB.uid ],
 				[ movedBlockA.uid ]: [],
@@ -487,7 +487,7 @@ describe( 'state', () => {
 				uids: [ 'ribs' ],
 			} );
 
-			expect( state.present.blockOrder ).toBe( original.present.blockOrder );
+			expect( state.buffer.blockOrder ).toBe( original.buffer.blockOrder );
 		} );
 
 		it( 'should remove the block', () => {
@@ -510,9 +510,9 @@ describe( 'state', () => {
 				uids: [ 'chicken' ],
 			} );
 
-			expect( state.present.blockOrder[ '' ] ).toEqual( [ 'ribs' ] );
-			expect( state.present.blockOrder ).not.toHaveProperty( 'chicken' );
-			expect( state.present.blocksByUid ).toEqual( {
+			expect( state.buffer.blockOrder[ '' ] ).toEqual( [ 'ribs' ] );
+			expect( state.buffer.blockOrder ).not.toHaveProperty( 'chicken' );
+			expect( state.buffer.blocksByUid ).toEqual( {
 				ribs: {
 					uid: 'ribs',
 					name: 'core/test-block',
@@ -546,10 +546,10 @@ describe( 'state', () => {
 				uids: [ 'chicken', 'veggies' ],
 			} );
 
-			expect( state.present.blockOrder[ '' ] ).toEqual( [ 'ribs' ] );
-			expect( state.present.blockOrder ).not.toHaveProperty( 'chicken' );
-			expect( state.present.blockOrder ).not.toHaveProperty( 'veggies' );
-			expect( state.present.blocksByUid ).toEqual( {
+			expect( state.buffer.blockOrder[ '' ] ).toEqual( [ 'ribs' ] );
+			expect( state.buffer.blockOrder ).not.toHaveProperty( 'chicken' );
+			expect( state.buffer.blockOrder ).not.toHaveProperty( 'veggies' );
+			expect( state.buffer.blocksByUid ).toEqual( {
 				ribs: {
 					uid: 'ribs',
 					name: 'core/test-block',
@@ -584,8 +584,8 @@ describe( 'state', () => {
 				} ],
 			} );
 
-			expect( Object.keys( state.present.blocksByUid ) ).toHaveLength( 3 );
-			expect( state.present.blockOrder[ '' ] ).toEqual( [ 'kumquat', 'persimmon', 'loquat' ] );
+			expect( Object.keys( state.buffer.blocksByUid ) ).toHaveLength( 3 );
+			expect( state.buffer.blockOrder[ '' ] ).toEqual( [ 'kumquat', 'persimmon', 'loquat' ] );
 		} );
 
 		it( 'should remove associated blocks when deleting a reusable block', () => {
@@ -609,8 +609,8 @@ describe( 'state', () => {
 				associatedBlockUids: [ 'chicken', 'veggies' ],
 			} );
 
-			expect( state.present.blockOrder[ '' ] ).toEqual( [ 'ribs' ] );
-			expect( state.present.blocksByUid ).toEqual( {
+			expect( state.buffer.blockOrder[ '' ] ).toEqual( [ 'ribs' ] );
+			expect( state.buffer.blocksByUid ).toEqual( {
 				ribs: {
 					uid: 'ribs',
 					name: 'core/test-block',
@@ -636,7 +636,7 @@ describe( 'state', () => {
 					},
 				} );
 
-				expect( state.present.edits ).toEqual( {
+				expect( state.buffer.edits ).toEqual( {
 					status: 'draft',
 					title: 'post title',
 					tags: [ 1 ],
@@ -659,7 +659,7 @@ describe( 'state', () => {
 					},
 				} );
 
-				expect( state.present.edits ).toBe( original.present.edits );
+				expect( state.buffer.edits ).toBe( original.buffer.edits );
 			} );
 
 			it( 'should save modified properties', () => {
@@ -680,7 +680,7 @@ describe( 'state', () => {
 					},
 				} );
 
-				expect( state.present.edits ).toEqual( {
+				expect( state.buffer.edits ).toEqual( {
 					status: 'draft',
 					title: 'modified title',
 					tags: [ 2 ],
@@ -696,7 +696,7 @@ describe( 'state', () => {
 					},
 				} );
 
-				expect( state.present.edits ).toEqual( {
+				expect( state.buffer.edits ).toEqual( {
 					status: 'draft',
 					title: 'post title',
 				} );
@@ -714,7 +714,7 @@ describe( 'state', () => {
 					},
 				} );
 
-				expect( state.present.edits ).toHaveProperty( 'content' );
+				expect( state.buffer.edits ).toHaveProperty( 'content' );
 
 				state = editor( original, {
 					type: 'RESET_BLOCKS',
@@ -731,7 +731,7 @@ describe( 'state', () => {
 					} ],
 				} );
 
-				expect( state.present.edits ).not.toHaveProperty( 'content' );
+				expect( state.buffer.edits ).not.toHaveProperty( 'content' );
 			} );
 		} );
 
@@ -753,7 +753,7 @@ describe( 'state', () => {
 					},
 				} );
 
-				expect( state.present.blocksByUid.kumquat.attributes.updated ).toBe( true );
+				expect( state.buffer.blocksByUid.kumquat.attributes.updated ).toBe( true );
 			} );
 
 			it( 'should accumulate attribute block updates', () => {
@@ -775,7 +775,7 @@ describe( 'state', () => {
 					},
 				} );
 
-				expect( state.present.blocksByUid.kumquat.attributes ).toEqual( {
+				expect( state.buffer.blocksByUid.kumquat.attributes ).toEqual( {
 					updated: true,
 					moreUpdated: true,
 				} );
@@ -794,7 +794,7 @@ describe( 'state', () => {
 					},
 				} );
 
-				expect( state.present.blocksByUid ).toBe( original.present.blocksByUid );
+				expect( state.buffer.blocksByUid ).toBe( original.buffer.blocksByUid );
 			} );
 
 			it( 'should return with same reference if no changes in updates', () => {
@@ -816,7 +816,7 @@ describe( 'state', () => {
 					},
 				} );
 
-				expect( state.present.blocksByUid ).toBe( state.present.blocksByUid );
+				expect( state.buffer.blocksByUid ).toBe( state.buffer.blocksByUid );
 			} );
 		} );
 	} );
