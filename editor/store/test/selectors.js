@@ -250,7 +250,7 @@ describe( 'selectors', () => {
 					status: 'auto-draft',
 				},
 				editor: {
-					buffer: {
+					present: {
 						edits: {},
 					},
 				},
@@ -265,7 +265,7 @@ describe( 'selectors', () => {
 					status: 'draft',
 				},
 				editor: {
-					buffer: {
+					present: {
 						edits: {},
 					},
 				},
@@ -387,7 +387,7 @@ describe( 'selectors', () => {
 			const state = {
 				currentPost: { slug: 'old slug' },
 				editor: {
-					buffer: {
+					present: {
 						edits: {
 							slug: 'new slug',
 						},
@@ -459,7 +459,7 @@ describe( 'selectors', () => {
 		it( 'should return the post edits', () => {
 			const state = {
 				editor: {
-					buffer: {
+					present: {
 						edits: { title: 'terga' },
 					},
 				},
@@ -476,7 +476,7 @@ describe( 'selectors', () => {
 					title: 'sassel',
 				},
 				editor: {
-					buffer: {
+					present: {
 						edits: { status: 'private' },
 					},
 				},
@@ -491,7 +491,7 @@ describe( 'selectors', () => {
 					title: 'sassel',
 				},
 				editor: {
-					buffer: {
+					present: {
 						edits: { title: 'youcha' },
 					},
 				},
@@ -510,7 +510,7 @@ describe( 'selectors', () => {
 					title: 'The Title',
 				},
 				editor: {
-					buffer: {
+					present: {
 						edits: {},
 						blocksByUid: {},
 						blockOrder: {},
@@ -530,7 +530,7 @@ describe( 'selectors', () => {
 					title: 'The Title',
 				},
 				editor: {
-					buffer: {
+					present: {
 						edits: {
 							title: 'Modified Title',
 						},
@@ -550,7 +550,7 @@ describe( 'selectors', () => {
 					title: '',
 				},
 				editor: {
-					buffer: {
+					present: {
 						edits: {},
 						blocksByUid: {},
 						blockOrder: {},
@@ -571,7 +571,7 @@ describe( 'selectors', () => {
 					title: '',
 				},
 				editor: {
-					buffer: {
+					present: {
 						edits: {},
 						blocksByUid: {},
 						blockOrder: {},
@@ -592,7 +592,7 @@ describe( 'selectors', () => {
 					excerpt: 'sassel',
 				},
 				editor: {
-					buffer: {
+					present: {
 						edits: { status: 'private' },
 					},
 				},
@@ -607,7 +607,7 @@ describe( 'selectors', () => {
 					excerpt: 'sassel',
 				},
 				editor: {
-					buffer: {
+					present: {
 						edits: { excerpt: 'youcha' },
 					},
 				},
@@ -624,7 +624,7 @@ describe( 'selectors', () => {
 					status: 'draft',
 				},
 				editor: {
-					buffer: {
+					present: {
 						edits: {},
 					},
 				},
@@ -639,7 +639,7 @@ describe( 'selectors', () => {
 					status: 'private',
 				},
 				editor: {
-					buffer: {
+					present: {
 						edits: {},
 					},
 				},
@@ -655,7 +655,7 @@ describe( 'selectors', () => {
 					password: 'chicken',
 				},
 				editor: {
-					buffer: {
+					present: {
 						edits: {},
 					},
 				},
@@ -671,7 +671,7 @@ describe( 'selectors', () => {
 					password: 'chicken',
 				},
 				editor: {
-					buffer: {
+					present: {
 						edits: {
 							status: 'private',
 							password: null,
@@ -833,7 +833,7 @@ describe( 'selectors', () => {
 		it( 'should return false if the post has no title, excerpt, content', () => {
 			const state = {
 				editor: {
-					buffer: {
+					present: {
 						blocksByUid: {},
 						blockOrder: {},
 						edits: {},
@@ -848,7 +848,7 @@ describe( 'selectors', () => {
 		it( 'should return true if the post has a title', () => {
 			const state = {
 				editor: {
-					buffer: {
+					present: {
 						blocksByUid: {},
 						blockOrder: {},
 						edits: {},
@@ -865,7 +865,7 @@ describe( 'selectors', () => {
 		it( 'should return true if the post has an excerpt', () => {
 			const state = {
 				editor: {
-					buffer: {
+					present: {
 						blocksByUid: {},
 						blockOrder: {},
 						edits: {},
@@ -882,7 +882,7 @@ describe( 'selectors', () => {
 		it( 'should return true if the post has content', () => {
 			const state = {
 				editor: {
-					buffer: {
+					present: {
 						blocksByUid: {
 							123: {
 								uid: 123,
@@ -909,7 +909,7 @@ describe( 'selectors', () => {
 		it( 'should return true for posts with a future date', () => {
 			const state = {
 				editor: {
-					buffer: {
+					present: {
 						edits: { date: moment().add( 7, 'days' ).format( '' ) },
 					},
 				},
@@ -921,7 +921,7 @@ describe( 'selectors', () => {
 		it( 'should return false for posts with an old date', () => {
 			const state = {
 				editor: {
-					buffer: {
+					present: {
 						edits: { date: '2016-05-30T17:21:39' },
 					},
 				},
@@ -956,7 +956,7 @@ describe( 'selectors', () => {
 			const state = {
 				currentPost: {},
 				editor: {
-					buffer: {
+					present: {
 						blocksByUid: {
 							123: { uid: 123, name: 'core/paragraph', attributes: {} },
 						},
@@ -981,7 +981,7 @@ describe( 'selectors', () => {
 			const state = {
 				currentPost: {},
 				editor: {
-					buffer: {
+					present: {
 						blocksByUid: {},
 						borderOrder: {},
 						edits: {},
@@ -996,7 +996,7 @@ describe( 'selectors', () => {
 			const state = {
 				currentPost: {},
 				editor: {
-					buffer: {
+					present: {
 						blocksByUid: {
 							123: { uid: 123, name: 'core/paragraph', attributes: {} },
 							456: { uid: 456, name: 'core/paragraph', attributes: {} },
@@ -1045,7 +1045,7 @@ describe( 'selectors', () => {
 					},
 				},
 				editor: {
-					buffer: {
+					present: {
 						blocksByUid: {
 							123: { uid: 123, name: 'core/meta-block', attributes: {} },
 						},
@@ -1074,7 +1074,7 @@ describe( 'selectors', () => {
 			const state = {
 				currentPost: {},
 				editor: {
-					buffer: {
+					present: {
 						blocksByUid: {
 							23: { uid: 23, name: 'core/heading', attributes: {} },
 							123: { uid: 123, name: 'core/paragraph', attributes: {} },
@@ -1098,7 +1098,7 @@ describe( 'selectors', () => {
 		it( 'should return the number of top-level blocks in the post', () => {
 			const state = {
 				editor: {
-					buffer: {
+					present: {
 						blocksByUid: {
 							23: { uid: 23, name: 'core/heading', attributes: {} },
 							123: { uid: 123, name: 'core/paragraph', attributes: {} },
@@ -1116,7 +1116,7 @@ describe( 'selectors', () => {
 		it( 'should return the number of blocks in a nested context', () => {
 			const state = {
 				editor: {
-					buffer: {
+					present: {
 						blocksByUid: {
 							123: { uid: 123, name: 'core/columns', attributes: {} },
 							456: { uid: 456, name: 'core/paragraph', attributes: {} },
@@ -1139,7 +1139,7 @@ describe( 'selectors', () => {
 			const state = {
 				currentPost: {},
 				editor: {
-					buffer: {
+					present: {
 						blocksByUid: {
 							23: { uid: 23, name: 'core/heading', attributes: {} },
 							123: { uid: 123, name: 'core/paragraph', attributes: {} },
@@ -1156,7 +1156,7 @@ describe( 'selectors', () => {
 		it( 'should return null if there is multi selection', () => {
 			const state = {
 				editor: {
-					buffer: {
+					present: {
 						blocksByUid: {
 							23: { uid: 23, name: 'core/heading', attributes: {} },
 							123: { uid: 123, name: 'core/paragraph', attributes: {} },
@@ -1172,7 +1172,7 @@ describe( 'selectors', () => {
 		it( 'should return the selected block', () => {
 			const state = {
 				editor: {
-					buffer: {
+					present: {
 						blocksByUid: {
 							23: { uid: 23, name: 'core/heading', attributes: {} },
 							123: { uid: 123, name: 'core/paragraph', attributes: {} },
@@ -1200,7 +1200,7 @@ describe( 'selectors', () => {
 		it( 'should return null if the block does not exist', () => {
 			const state = {
 				editor: {
-					buffer: {
+					present: {
 						blockOrder: {},
 					},
 				},
@@ -1212,7 +1212,7 @@ describe( 'selectors', () => {
 		it( 'should return root UID relative the block UID', () => {
 			const state = {
 				editor: {
-					buffer: {
+					present: {
 						blockOrder: {
 							'': [ 123, 23 ],
 							123: [ 456, 56 ],
@@ -1229,7 +1229,7 @@ describe( 'selectors', () => {
 		it( 'should return empty if there is no multi selection', () => {
 			const state = {
 				editor: {
-					buffer: {
+					present: {
 						blockOrder: {
 							'': [ 123, 23 ],
 						},
@@ -1244,7 +1244,7 @@ describe( 'selectors', () => {
 		it( 'should return selected block uids if there is multi selection', () => {
 			const state = {
 				editor: {
-					buffer: {
+					present: {
 						blockOrder: {
 							'': [ 5, 4, 3, 2, 1 ],
 						},
@@ -1259,7 +1259,7 @@ describe( 'selectors', () => {
 		it( 'should return selected block uids if there is multi selection (nested context)', () => {
 			const state = {
 				editor: {
-					buffer: {
+					present: {
 						blockOrder: {
 							'': [ 5, 4, 3, 2, 1 ],
 							4: [ 9, 8, 7, 6 ],
@@ -1313,7 +1313,7 @@ describe( 'selectors', () => {
 		it( 'should return the ordered block UIDs of top-level blocks by default', () => {
 			const state = {
 				editor: {
-					buffer: {
+					present: {
 						blockOrder: {
 							'': [ 123, 23 ],
 						},
@@ -1327,7 +1327,7 @@ describe( 'selectors', () => {
 		it( 'should return the ordered block UIDs at a specified rootUID', () => {
 			const state = {
 				editor: {
-					buffer: {
+					present: {
 						blockOrder: {
 							'': [ 123, 23 ],
 							123: [ 456 ],
@@ -1344,7 +1344,7 @@ describe( 'selectors', () => {
 		it( 'should return the block order', () => {
 			const state = {
 				editor: {
-					buffer: {
+					present: {
 						blockOrder: {
 							'': [ 123, 23 ],
 						},
@@ -1358,7 +1358,7 @@ describe( 'selectors', () => {
 		it( 'should return the block order (nested context)', () => {
 			const state = {
 				editor: {
-					buffer: {
+					present: {
 						blockOrder: {
 							'': [ 123, 23 ],
 							123: [ 456, 56 ],
@@ -1375,7 +1375,7 @@ describe( 'selectors', () => {
 		it( 'should return the previous block', () => {
 			const state = {
 				editor: {
-					buffer: {
+					present: {
 						blocksByUid: {
 							23: { uid: 23, name: 'core/heading', attributes: {} },
 							123: { uid: 123, name: 'core/paragraph', attributes: {} },
@@ -1398,7 +1398,7 @@ describe( 'selectors', () => {
 		it( 'should return the previous block (nested context)', () => {
 			const state = {
 				editor: {
-					buffer: {
+					present: {
 						blocksByUid: {
 							23: { uid: 23, name: 'core/heading', attributes: {} },
 							123: { uid: 123, name: 'core/paragraph', attributes: {} },
@@ -1424,7 +1424,7 @@ describe( 'selectors', () => {
 		it( 'should return null for the first block', () => {
 			const state = {
 				editor: {
-					buffer: {
+					present: {
 						blocksByUid: {
 							23: { uid: 23, name: 'core/heading', attributes: {} },
 							123: { uid: 123, name: 'core/paragraph', attributes: {} },
@@ -1442,7 +1442,7 @@ describe( 'selectors', () => {
 		it( 'should return null for the first block (nested context)', () => {
 			const state = {
 				editor: {
-					buffer: {
+					present: {
 						blocksByUid: {
 							23: { uid: 23, name: 'core/heading', attributes: {} },
 							123: { uid: 123, name: 'core/paragraph', attributes: {} },
@@ -1465,7 +1465,7 @@ describe( 'selectors', () => {
 		it( 'should return the following block', () => {
 			const state = {
 				editor: {
-					buffer: {
+					present: {
 						blocksByUid: {
 							23: { uid: 23, name: 'core/heading', attributes: {} },
 							123: { uid: 123, name: 'core/paragraph', attributes: {} },
@@ -1488,7 +1488,7 @@ describe( 'selectors', () => {
 		it( 'should return the following block (nested context)', () => {
 			const state = {
 				editor: {
-					buffer: {
+					present: {
 						blocksByUid: {
 							23: { uid: 23, name: 'core/heading', attributes: {} },
 							123: { uid: 123, name: 'core/paragraph', attributes: {} },
@@ -1514,7 +1514,7 @@ describe( 'selectors', () => {
 		it( 'should return null for the last block', () => {
 			const state = {
 				editor: {
-					buffer: {
+					present: {
 						blocksByUid: {
 							23: { uid: 23, name: 'core/heading', attributes: {} },
 							123: { uid: 123, name: 'core/paragraph', attributes: {} },
@@ -1532,7 +1532,7 @@ describe( 'selectors', () => {
 		it( 'should return null for the last block (nested context)', () => {
 			const state = {
 				editor: {
-					buffer: {
+					present: {
 						blocksByUid: {
 							23: { uid: 23, name: 'core/heading', attributes: {} },
 							123: { uid: 123, name: 'core/paragraph', attributes: {} },
@@ -1582,7 +1582,7 @@ describe( 'selectors', () => {
 			const state = {
 				blockSelection: { start: 5, end: 3 },
 				editor: {
-					buffer: {
+					present: {
 						blockOrder: {
 							'': [ 5, 4, 3, 2, 1 ],
 						},
@@ -1597,7 +1597,7 @@ describe( 'selectors', () => {
 			const state = {
 				blockSelection: { start: 5, end: 3 },
 				editor: {
-					buffer: {
+					present: {
 						blockOrder: {
 							'': [ 5, 4, 3, 2, 1 ],
 						},
@@ -1612,7 +1612,7 @@ describe( 'selectors', () => {
 			const state = {
 				blockSelection: { start: 5, end: 3 },
 				editor: {
-					buffer: {
+					present: {
 						blockOrder: {
 							'': [ 5, 4, 3, 2, 1 ],
 						},
@@ -1627,7 +1627,7 @@ describe( 'selectors', () => {
 			const state = {
 				blockSelection: {},
 				editor: {
-					buffer: {
+					present: {
 						blockOrder: {
 							'': [ 5, 4, 3, 2, 1 ],
 						},
@@ -1642,7 +1642,7 @@ describe( 'selectors', () => {
 	describe( 'isBlockMultiSelected', () => {
 		const state = {
 			editor: {
-				buffer: {
+				present: {
 					blockOrder: {
 						'': [ 5, 4, 3, 2, 1 ],
 					},
@@ -1663,7 +1663,7 @@ describe( 'selectors', () => {
 	describe( 'isFirstMultiSelectedBlock', () => {
 		const state = {
 			editor: {
-				buffer: {
+				present: {
 					blockOrder: {
 						'': [ 5, 4, 3, 2, 1 ],
 					},
@@ -1769,7 +1769,7 @@ describe( 'selectors', () => {
 					end: 2,
 				},
 				editor: {
-					buffer: {
+					present: {
 						blocksByUid: {
 							2: { uid: 2 },
 						},
@@ -1793,7 +1793,7 @@ describe( 'selectors', () => {
 					end: 2,
 				},
 				editor: {
-					buffer: {
+					present: {
 						blockOrder: {
 							'': [ 1, 2, 3 ],
 						},
@@ -1810,7 +1810,7 @@ describe( 'selectors', () => {
 				preferences: { mode: 'visual' },
 				blockSelection: { start: null, end: null },
 				editor: {
-					buffer: {
+					present: {
 						blockOrder: {
 							'': [ 1, 2, 3 ],
 						},
@@ -1916,7 +1916,7 @@ describe( 'selectors', () => {
 		it( 'returns null if cannot be determined', () => {
 			const state = {
 				editor: {
-					buffer: {
+					present: {
 						blockOrder: {},
 						blocksByUid: {},
 					},
@@ -1929,7 +1929,7 @@ describe( 'selectors', () => {
 		it( 'returns null if there is more than one block in the post', () => {
 			const state = {
 				editor: {
-					buffer: {
+					present: {
 						blockOrder: {
 							'': [ 123, 456 ],
 						},
@@ -1947,7 +1947,7 @@ describe( 'selectors', () => {
 		it( 'returns Image if the first block is of type `core/image`', () => {
 			const state = {
 				editor: {
-					buffer: {
+					present: {
 						blockOrder: {
 							'': [ 123 ],
 						},
@@ -1964,7 +1964,7 @@ describe( 'selectors', () => {
 		it( 'returns Quote if the first block is of type `core/quote`', () => {
 			const state = {
 				editor: {
-					buffer: {
+					present: {
 						blockOrder: {
 							'': [ 456 ],
 						},
@@ -1981,7 +1981,7 @@ describe( 'selectors', () => {
 		it( 'returns Video if the first block is of type `core-embed/youtube`', () => {
 			const state = {
 				editor: {
-					buffer: {
+					present: {
 						blockOrder: {
 							'': [ 567 ],
 						},
@@ -1998,7 +1998,7 @@ describe( 'selectors', () => {
 		it( 'returns Quote if the first block is of type `core/quote` and second is of type `core/paragraph`', () => {
 			const state = {
 				editor: {
-					buffer: {
+					present: {
 						blockOrder: {
 							'': [ 456, 789 ],
 						},
@@ -2031,7 +2031,7 @@ describe( 'selectors', () => {
 		it( 'should list all non-private regular block types', () => {
 			const state = {
 				editor: {
-					buffer: {
+					present: {
 						blocksByUid: {},
 						blockOrder: {},
 					},
@@ -2048,7 +2048,7 @@ describe( 'selectors', () => {
 		it( 'should properly list a regular block type', () => {
 			const state = {
 				editor: {
-					buffer: {
+					present: {
 						blocksByUid: {},
 						blockOrder: {},
 					},
@@ -2075,7 +2075,7 @@ describe( 'selectors', () => {
 		it( 'should set isDisabled when a regular block type with useOnce has been used', () => {
 			const state = {
 				editor: {
-					buffer: {
+					present: {
 						blocksByUid: {
 							1: { uid: 1, name: 'core/test-block', attributes: {} },
 						},
@@ -2096,7 +2096,7 @@ describe( 'selectors', () => {
 		it( 'should properly list reusable blocks', () => {
 			const state = {
 				editor: {
-					buffer: {
+					present: {
 						blocksByUid: {},
 						blockOrder: {},
 					},
@@ -2155,7 +2155,7 @@ describe( 'selectors', () => {
 					],
 				},
 				editor: {
-					buffer: {
+					present: {
 						blockOrder: [],
 					},
 				},
@@ -2186,7 +2186,7 @@ describe( 'selectors', () => {
 					],
 				},
 				editor: {
-					buffer: {
+					present: {
 						blockOrder: [],
 					},
 				},
