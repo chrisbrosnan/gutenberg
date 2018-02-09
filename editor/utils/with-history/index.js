@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { includes } from 'lodash';
+import { includes, first, last, drop, dropRight } from 'lodash';
 
 /**
  * Reducer enhancer which transforms the result of the original reducer into an
@@ -29,10 +29,10 @@ export default function withHistory( reducer, options = {} ) {
 		switch ( action.type ) {
 			case 'UNDO':
 				// If there are changes in buffer, push buffer to the future.
-				if ( past[ past.length - 1 ] !== present ) {
+				if ( last( past ) !== present ) {
 					return {
 						past,
-						present: past[ past.length - 1 ],
+						present: last( past ),
 						future: [ present, ...future ],
 					};
 				}
@@ -44,9 +44,11 @@ export default function withHistory( reducer, options = {} ) {
 					return state;
 				}
 
+				const newPast = dropRight( past );
+
 				return {
-					past: past.slice( 0, past.length - 1 ),
-					present: past[ past.length - 2 ],
+					past: newPast,
+					present: last( newPast ),
 					future: [ present, ...future ],
 				};
 			case 'REDO':
@@ -56,14 +58,14 @@ export default function withHistory( reducer, options = {} ) {
 				}
 
 				return {
-					past: [ ...past, future[ 0 ] ],
-					present: future[ 0 ],
-					future: future.slice( 1 ),
+					past: [ ...past, first( future ) ],
+					present: first( future ),
+					future: drop( future ),
 				};
 
 			case 'CREATE_UNDO_LEVEL':
 				// Already has this level.
-				if ( past[ past.length - 1 ] === present ) {
+				if ( last( past ) === present ) {
 					return state;
 				}
 

@@ -1,4 +1,9 @@
 /**
+ * External dependencies
+ */
+import { last } from 'lodash';
+
+/**
  * Internal dependencies
  */
 import withHistory from '../';
@@ -10,13 +15,15 @@ describe( 'withHistory', () => {
 
 	it( 'should return a new reducer', () => {
 		const reducer = withHistory( counter );
+		const state = reducer( undefined, {} );
 
-		expect( typeof reducer ).toBe( 'function' );
-		expect( reducer( undefined, {} ) ).toEqual( {
+		expect( state ).toEqual( {
 			past: [ { count: 0 } ],
 			present: { count: 0 },
 			future: [],
 		} );
+
+		expect( last( state.past ) ).toBe( state.present );
 	} );
 
 	it( 'should track changes in present', () => {
@@ -64,7 +71,7 @@ describe( 'withHistory', () => {
 			future: [ { count: 1 } ],
 		} );
 
-		expect( state.past[ state.past.length - 1 ] ).toBe( state.present );
+		expect( last( state.past ) ).toBe( state.present );
 		expect( state ).toBe( reducer( state, { type: 'UNDO' } ) );
 	} );
 
@@ -83,7 +90,7 @@ describe( 'withHistory', () => {
 			future: [ { count: 1 } ],
 		} );
 
-		expect( state.past[ state.past.length - 1 ] ).toBe( state.present );
+		expect( last( state.past ) ).toBe( state.present );
 		expect( state ).toBe( reducer( state, { type: 'UNDO' } ) );
 	} );
 
@@ -103,7 +110,7 @@ describe( 'withHistory', () => {
 			future: [],
 		} );
 
-		expect( state.past[ state.past.length - 1 ] ).toBe( state.present );
+		expect( last( state.past ) ).toBe( state.present );
 		expect( state ).toBe( reducer( state, { type: 'REDO' } ) );
 	} );
 
