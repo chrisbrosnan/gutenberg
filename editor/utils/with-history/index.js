@@ -90,10 +90,18 @@ export default function withHistory( reducer, options = {} ) {
 			return state;
 		}
 
+		if ( includes( options.bufferTypes, action.type ) ) {
+			return {
+				past,
+				present: nextPresent,
+				future,
+			};
+		}
+
 		return {
-			past,
+			past: [ ...past, present ],
 			present: nextPresent,
-			future,
+			future: [],
 		};
 	};
 }

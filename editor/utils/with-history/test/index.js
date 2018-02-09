@@ -9,12 +9,24 @@ import { last } from 'lodash';
 import withHistory from '../';
 
 describe( 'withHistory', () => {
-	const counter = ( state = { count: 0 }, { type } ) => (
-		type === 'INCREMENT' ? { count: state.count + 1 } : state
-	);
+	const counter = ( state = { count: 0 }, { type } ) => {
+		if ( type === 'INCREMENT' ) {
+			return { count: state.count + 1 };
+		}
+
+		if ( type === 'RESET' ) {
+			return { count: 0 };
+		}
+
+		return state;
+	};
+
+	const reducer = withHistory( counter, {
+		bufferTypes: [ 'INCREMENT' ],
+		resetTypes: [ 'RESET_HISTORY' ],
+	} );
 
 	it( 'should return a new reducer', () => {
-		const reducer = withHistory( counter );
 		const state = reducer( undefined, {} );
 
 		expect( state ).toEqual( {
@@ -27,8 +39,6 @@ describe( 'withHistory', () => {
 	} );
 
 	it( 'should track changes in present', () => {
-		const reducer = withHistory( counter );
-
 		let state;
 		state = reducer( undefined, {} );
 		state = reducer( state, { type: 'INCREMENT' } );
@@ -41,8 +51,6 @@ describe( 'withHistory', () => {
 	} );
 
 	it( 'should create undo level if buffer is available', () => {
-		const reducer = withHistory( counter );
-
 		let state;
 		state = reducer( undefined, {} );
 		state = reducer( state, { type: 'INCREMENT' } );
@@ -58,8 +66,6 @@ describe( 'withHistory', () => {
 	} );
 
 	it( 'should perform undo of buffer', () => {
-		const reducer = withHistory( counter );
-
 		let state;
 		state = reducer( undefined, {} );
 		state = reducer( state, { type: 'INCREMENT' } );
@@ -76,8 +82,6 @@ describe( 'withHistory', () => {
 	} );
 
 	it( 'should perform undo of last level', () => {
-		const reducer = withHistory( counter );
-
 		let state;
 		state = reducer( undefined, {} );
 		state = reducer( state, { type: 'INCREMENT' } );
@@ -95,8 +99,6 @@ describe( 'withHistory', () => {
 	} );
 
 	it( 'should perform redo', () => {
-		const reducer = withHistory( counter );
-
 		let state;
 		state = reducer( undefined, {} );
 		state = reducer( state, { type: 'INCREMENT' } );
@@ -115,8 +117,6 @@ describe( 'withHistory', () => {
 	} );
 
 	it( 'should reset history by options.resetTypes', () => {
-		const reducer = withHistory( counter, { resetTypes: [ 'RESET_HISTORY' ] } );
-
 		let state;
 		state = reducer( undefined, {} );
 		state = reducer( state, { type: 'INCREMENT' } );
@@ -126,6 +126,19 @@ describe( 'withHistory', () => {
 		expect( state ).toEqual( {
 			past: [ { count: 1 } ],
 			present: { count: 1 },
+			future: [],
+		} );
+	} );
+
+	it( 'should should create history record for non buffer types', () => {
+		let state;
+		state = reducer( undefined, {} );
+		state = reducer( state, { type: 'INCREMENT' } );
+		state = reducer( state, { type: 'RESET' } );
+
+		expect( state ).toEqual( {
+			past: [ { count: 0 }, { count: 1 } ],
+			present: { count: 0 },
 			future: [],
 		} );
 	} );

@@ -114,7 +114,10 @@ export const editor = flow( [
 	combineReducers,
 
 	// Track undo history, starting at editor initialization.
-	partialRight( withHistory, { resetTypes: [ 'SETUP_NEW_POST', 'SETUP_EDITOR' ] } ),
+	partialRight( withHistory, {
+		resetTypes: [ 'SETUP_NEW_POST', 'SETUP_EDITOR' ],
+		bufferTypes: [ 'UPDATE_BLOCK_ATTRIBUTES', 'EDIT_POST', 'RESET_POST' ] },
+	),
 
 	// Track whether changes exist, resetting at each post save. Relies on
 	// editor initialization firing post reset as an effect.
