@@ -102,6 +102,7 @@ export default class RichText extends Component {
 		this.onPastePreProcess = this.onPastePreProcess.bind( this );
 		this.onPaste = this.onPaste.bind( this );
 		this.onAddUndo = this.onAddUndo.bind( this );
+		this.onCreateUndoLevel = this.onCreateUndoLevel.bind( this );
 
 		this.state = {
 			formats: {},
@@ -373,6 +374,11 @@ export default class RichText extends Component {
 			return;
 		}
 
+		this.onCreateUndoLevel();
+	}
+
+	onCreateUndoLevel() {
+		// Always ensure the content is up-to-date.
 		this.onChange();
 		this.context.onCreateUndoLevel();
 	}
@@ -502,7 +508,7 @@ export default class RichText extends Component {
 				return;
 			}
 
-			this.context.onCreateUndoLevel();
+			this.onCreateUndoLevel();
 
 			const forward = event.keyCode === DELETE;
 
@@ -541,6 +547,7 @@ export default class RichText extends Component {
 				}
 
 				event.preventDefault();
+				this.onCreateUndoLevel();
 
 				const childNodes = Array.from( rootNode.childNodes );
 				const index = dom.nodeIndex( selectedNode );
@@ -553,6 +560,7 @@ export default class RichText extends Component {
 				this.props.onSplit( beforeElement, afterElement );
 			} else {
 				event.preventDefault();
+				this.onCreateUndoLevel();
 
 				if ( event.shiftKey || ! this.props.onSplit ) {
 					this.editor.execCommand( 'InsertLineBreak', false, event );
@@ -560,8 +568,6 @@ export default class RichText extends Component {
 					this.splitContent();
 				}
 			}
-
-			this.context.onCreateUndoLevel();
 		}
 	}
 
@@ -697,7 +703,6 @@ export default class RichText extends Component {
 
 	componentWillUnmount() {
 		this.onChange();
-		this.context.onCreateUndoLevel();
 	}
 
 	componentDidUpdate( prevProps ) {
