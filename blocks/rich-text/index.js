@@ -365,7 +365,7 @@ export default class RichText extends Component {
 	 */
 	onChange() {
 		this.savedContent = this.getContent();
-		this.props.onChange( this.state.empty ? [] : this.savedContent );
+		this.props.onChange( this.savedContent );
 	}
 
 	onAddUndo( { lastLevel } ) {
@@ -688,6 +688,10 @@ export default class RichText extends Component {
 	}
 
 	getContent() {
+		if ( this.state.empty ) {
+			return [];
+		}
+
 		return nodeListToReact( this.editor.getBody().childNodes || [], createTinyMCEElement );
 	}
 
